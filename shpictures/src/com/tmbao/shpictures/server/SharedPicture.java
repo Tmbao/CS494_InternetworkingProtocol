@@ -11,6 +11,9 @@ import java.io.*;
  */
 public class SharedPicture implements Serializable {
   String ownerName;
+
+
+
   String description;
   String imageId;
   SerializableBufferedImage image;
@@ -29,6 +32,10 @@ public class SharedPicture implements Serializable {
 
   public String getImageId() {
     return imageId;
+  }
+
+  public SerializableBufferedImage getImage() {
+    return image;
   }
 
   public void releaseImage() {

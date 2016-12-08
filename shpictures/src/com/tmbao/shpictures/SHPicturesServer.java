@@ -6,6 +6,7 @@ import com.tmbao.shpictures.server.Package;
 import com.tmbao.shpictures.utils.Serializer;
 import com.tmbao.shpictures.utils.Settings;
 
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,6 +18,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by Tmbao on 12/3/16.
  */
 public class SHPicturesServer {
+
+
   public static void main(String[] args) {
     int portNumber = Settings.DEFAULT_PORT;
     if (args.length > 0) {
@@ -45,6 +48,7 @@ public class SHPicturesServer {
                 sharedPic = (SharedPicture) Serializer.deserialize(clientState.getData());
                 sharedPic.setImageId(clientState.getIdentifier().getClientId());
                 sharedPic.releaseImage();
+                System.out.printf("released\n");
 
                 clientState.resetData();
 
@@ -88,6 +92,7 @@ public class SHPicturesServer {
 
   private static Package serializeAndPoll(ClientState clientState, List<SharedPicture> result) throws IOException {
     List<Pair<Integer, byte[]>> buffers;
+
     clientState.resetData();
     buffers = Serializer.serialize(result, Settings.BUFFER_SIZE);
     for (Pair<Integer, byte[]> buffer : buffers) {
