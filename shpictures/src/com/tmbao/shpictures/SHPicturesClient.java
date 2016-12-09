@@ -6,6 +6,7 @@ import com.tmbao.shpictures.server.Package;
 import com.tmbao.shpictures.server.SharedPicture;
 import com.tmbao.shpictures.utils.Serializer;
 import com.tmbao.shpictures.utils.Settings;
+import com.tmbao.shpictures.utils.Utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -168,9 +169,7 @@ public class SHPicturesClient {
       outputStream.flush();
 
       byte[] bytes = new byte[Settings.BUFFER_CAPACITY];
-      int length = inputStream.read(bytes);
-
-      Package responsePkg = (Package) Serializer.deserialize(Arrays.copyOf(bytes, length));
+      Package responsePkg = Utils.getPackage(inputStream);
       if (responsePkg.getType() == Package.PackageType.LIST_IMAGE) {
         byteArrayOutputStream.write(responsePkg.getData(), 0, responsePkg.getLength());
         while (responsePkg.getLength() == Settings.BUFFER_SIZE) {
@@ -178,14 +177,11 @@ public class SHPicturesClient {
           outputStream.write(Serializer.serialize(requestPkg));
           outputStream.flush();
 
-          length = inputStream.read(bytes);
-          if (length > 0) {
-            responsePkg = (Package) Serializer.deserialize(Arrays.copyOf(bytes, length));
-            if (responsePkg.getType() == Package.PackageType.LIST_IMAGE) {
-              byteArrayOutputStream.write(responsePkg.getData(), 0, responsePkg.getLength());
-            } else {
-              break;
-            }
+          responsePkg = Utils.getPackage(inputStream);
+          if (responsePkg.getType() == Package.PackageType.LIST_IMAGE) {
+            byteArrayOutputStream.write(responsePkg.getData(), 0, responsePkg.getLength());
+          } else {
+            break;
           }
         }
       }

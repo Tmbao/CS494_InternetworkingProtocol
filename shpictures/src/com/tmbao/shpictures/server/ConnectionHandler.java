@@ -3,10 +3,9 @@ package com.tmbao.shpictures.server;
 import com.sun.tools.javac.util.Pair;
 import com.tmbao.shpictures.utils.Serializer;
 import com.tmbao.shpictures.utils.Settings;
+import com.tmbao.shpictures.utils.Utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -32,13 +31,11 @@ public class ConnectionHandler implements Runnable {
       InputStream inputStream = socket.getInputStream();
       OutputStream outputStream = socket.getOutputStream();
 
+      Package requestPkg;
+      Package responsePkg = null;
+      ClientState clientState = null;
       while (true) {
-        int length = inputStream.read(bytes);
-
-        // Deserialize data
-        Package requestPkg = (Package) Serializer.deserialize(Arrays.copyOf(bytes, length));
-        Package responsePkg = null;
-        ClientState clientState = null;
+        requestPkg = Utils.getPackage(inputStream);
 
         switch (requestPkg.getType()) {
           case INITIATE:
@@ -116,6 +113,7 @@ public class ConnectionHandler implements Runnable {
 
           case CLOSE:
             clientState = clientManagement.getState(requestPkg.getClientIdentifier().getClientId());
+//            responsePkg = new Package(requestPkg.getClientIdentifier(), Package.PackageType.CLOSE);
             break;
         }
 
@@ -129,6 +127,7 @@ public class ConnectionHandler implements Runnable {
           break;
         }
 
+//        if (responsePkg.getType() == Package.PackageType.CLOSE) {
         if (responsePkg != null) {
           outputStream.write(Serializer.serialize(responsePkg));
           outputStream.flush();
