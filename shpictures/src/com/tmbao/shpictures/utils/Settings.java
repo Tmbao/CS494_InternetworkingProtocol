@@ -15,8 +15,8 @@ public class Settings {
   public static final int BUFFER_CAPACITY = 3072;
   public static final String DATA_BASE_PATH = "data";
   public static final String FORMAT_NAME = "jpg";
-  public static final int DISPLAY_WIDTH = 720;
-  public static final int DISPLAY_HEIGHT = 576;
+  public static final int DISPLAY_WIDTH = 640;
+  public static final int DISPLAY_HEIGHT = 480;
   public static final int SLEEP_TIME = 50;
 
   public static String getFileName(String imageId) {

@@ -28,7 +28,7 @@ public class DialogShowImage extends JDialog {
     this.imageList = imageList;
 
     listImage.setModel(new DefaultListModel());
-    listScroller.setPreferredSize(new Dimension(Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT/2));
+    listScroller.setPreferredSize(new Dimension(Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT/5));
     labelImage.setPreferredSize(new Dimension(Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT));
 
     DefaultListModel listModel = (DefaultListModel) listImage.getModel();
@@ -63,7 +63,7 @@ public class DialogShowImage extends JDialog {
           int index = source.getSelectedIndex();
           BufferedImage img = imageList.get(index).getImage().getImage();
           if(img.getWidth() > Settings.DISPLAY_WIDTH || img.getHeight() > Settings.DISPLAY_HEIGHT) {
-            img = Utils.resizeImage(img, Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT);
+            img = Utils.resizeImageToFit(img, Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT);
           }
           labelImage.setIcon(new ImageIcon(img));
           labelImage.setHorizontalAlignment(SwingConstants.CENTER);

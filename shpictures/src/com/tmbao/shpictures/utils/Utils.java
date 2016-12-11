@@ -78,14 +78,23 @@ public class Utils {
     dialog.setVisible(true);
   }
 
-  public static BufferedImage resizeImage(BufferedImage img, int newW, int newH) {
-    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+  public static BufferedImage resizeImageToFit(BufferedImage img, int newW, int newH) {
+    int finalw = newW;
+    int finalh = newH;
+    double factor = 1.0d;
+    if(img.getWidth() > img.getHeight()){
+      factor = ((double)img.getHeight()/(double)img.getWidth());
+      finalh = (int)(finalw * factor);
+    }else{
+      factor = ((double)img.getWidth()/(double)img.getHeight());
+      finalw = (int)(finalh * factor);
+    }
 
-    Graphics2D g2d = dimg.createGraphics();
-    g2d.drawImage(tmp, 0, 0, null);
-    g2d.dispose();
-
-    return dimg;
+    BufferedImage resizedImg = new BufferedImage(finalw, finalh, BufferedImage.TRANSLUCENT);
+    Graphics2D g2 = resizedImg.createGraphics();
+    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g2.drawImage(img, 0, 0, finalw, finalh, null);
+    g2.dispose();
+    return resizedImg;
   }
 }
