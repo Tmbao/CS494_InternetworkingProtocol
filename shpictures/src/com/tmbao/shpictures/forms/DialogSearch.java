@@ -92,9 +92,12 @@ public class DialogSearch extends JDialog {
             serializedQuery, serializedQuery.length);
 
         List<SharedPicture> result = sendQueryAndGetResult(pkg);
+
+
         Utils.outputResult(result);
 
         closeConnection(identifier);
+
       }
     } catch (Exception e) {
       e.printStackTrace();

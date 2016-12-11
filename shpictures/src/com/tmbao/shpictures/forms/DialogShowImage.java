@@ -4,12 +4,14 @@ import com.tmbao.shpictures.server.SharedPicture;
 import com.tmbao.shpictures.utils.Settings;
 import com.tmbao.shpictures.utils.Utils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,7 +20,10 @@ public class DialogShowImage extends JDialog {
   private JList listImage;
   private JScrollPane listScroller;
   private JLabel labelImage;
+  private JButton buttonSave;
   private List<SharedPicture> imageList;
+  private final JFileChooser fc = new JFileChooser();
+  private int chosen = -1;
 
   public DialogShowImage(List<SharedPicture> imageList) {
     setContentPane(contentPane);
@@ -61,12 +66,32 @@ public class DialogShowImage extends JDialog {
         if (!event.getValueIsAdjusting()){
           JList source = (JList)event.getSource();
           int index = source.getSelectedIndex();
+          chosen = index;
           BufferedImage img = imageList.get(index).getImage().getImage();
           if(img.getWidth() > Settings.DISPLAY_WIDTH || img.getHeight() > Settings.DISPLAY_HEIGHT) {
             img = Utils.resizeImageToFit(img, Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT);
           }
           labelImage.setIcon(new ImageIcon(img));
           labelImage.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+      }
+    });
+    buttonSave.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if(chosen == -1) {
+          return;
+        }
+        int ret = fc.showSaveDialog(DialogShowImage.this);
+        if (ret == JFileChooser.APPROVE_OPTION) {
+          try {
+            BufferedImage img = imageList.get(chosen).getImage().getImage();
+            File f = new File(fc.getSelectedFile().getAbsolutePath() + "." + Settings.FORMAT_NAME);
+            ImageIO.write(img, Settings.FORMAT_NAME, f);
+            JOptionPane.showMessageDialog(DialogShowImage.this, "Image Saved");
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
         }
       }
     });
